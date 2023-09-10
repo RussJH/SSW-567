@@ -21,8 +21,6 @@ RIGHT_ISOSCELES_TRIANGLE = 'Right Isosceles'
 RIGHT_SCALENE_TRIANGLE = 'Right Scalene'
 SCALENE_TRIANGLE = 'Scalene'
 
-UNKNOWN = 'Unknown'
-
 
 #################################
 # Functions
@@ -36,6 +34,9 @@ def classify_triangle(a, b, c):
         - Scalene Triangle: Three sides with different lengths 
         - Right Triangle: Three sides with lengths a, b, and c where a2 + b2 = c2
         - Invalid if the sum of two sides are not greater than the third side
+
+     Note: Right triangles for the purpose of this exercise have 
+            the significant digits rounded to 15 places. 
     """
     # normalize inputs so that c is the largest always
     a, b, c = sorted([a, b, c])
@@ -45,7 +46,7 @@ def classify_triangle(a, b, c):
         return INVALID_TRIANGLE
     elif a == b and b == c:
         return EQUILATERAL_TRIANGLE
-    elif ((a*a) + b*b == (c*c)):
+    elif round(a*a,15) + round(b*b,15) == round(c*c,15):
         if a != b != c:
             return RIGHT_SCALENE_TRIANGLE
         else:
@@ -74,6 +75,8 @@ class TestTriangles(unittest.TestCase):
        self.assertEqual(classify_triangle(5,4,3), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
        self.assertEqual(classify_triangle(4,5,3), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
 
+       self.assertEqual(classify_triangle(1,1,math.sqrt(2)), RIGHT_ISOSCELES_TRIANGLE, "Should be a Scalene Right Triangle")
+
        self.assertEqual(classify_triangle(3,3,5), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
        self.assertEqual(classify_triangle(5,3,3), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
        self.assertEqual(classify_triangle(3,5,3), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
@@ -93,8 +96,28 @@ class TestTriangles(unittest.TestCase):
 def main():
     """Main Function"""
     #Run functions
+    print('Running function with different parameters')
+
+    a, b, c =[1, 1, 1]
+    print('Triangle with sides a={}, b={}, c={} is : {}'.format(a,b,c, classify_triangle(a,b,c)))
+
+    a, b, c =[4, 5, 6]
+    print('Triangle with sides a={}, b={}, c={} is : {}'.format(a,b,c, classify_triangle(a,b,c)))
+
+    a, b, c =[3, 4, 5]
+    
+    print('Triangle with sides a={}, b={}, c={} is : {}'.format(a,b,c, classify_triangle(a,b,c)) )
+
+    a, b, c =[1, 1, math.sqrt(2)]
+    print('Triangle with sides a={}, b={}, c={} is : {}'.format(a,b,c, classify_triangle(a,b,c)) )
+
+    a, b, c =[3, 3, 5]
+    print('Triangle with sides a={}, b={}, c={} is : {}'.format(a,b,c, classify_triangle(a,b,c)) )
+    
+
 
     #Run Test Methods
+    print('\nRunning Unit Tests:')
     unittest.main(exit=True)
 
 
