@@ -62,26 +62,27 @@ def classify_triangle(a, b, c):
 #################################
 class TestTriangles(unittest.TestCase):
 
-    def test_valid(self):
-       self.assertEqual(classify_triangle(1,1,1), EQUILATERAL_TRIANGLE, "Should be an Equilateral Triangle")
-       self.assertEqual(classify_triangle(3,3,3), EQUILATERAL_TRIANGLE, "Should be an Equilateral Triangle")
-       self.assertEqual(classify_triangle(.1,.1,.1), EQUILATERAL_TRIANGLE, "Should be an Equilateral Triangle")
+    def test_valid_equilateral(self):
+        self.assertEqual(classify_triangle(1,1,1), EQUILATERAL_TRIANGLE, "Should be an Equilateral Triangle")
+        self.assertEqual(classify_triangle(3,3,3), EQUILATERAL_TRIANGLE, "Should be an Equilateral Triangle")
+        self.assertEqual(classify_triangle(.1,.1,.1), EQUILATERAL_TRIANGLE, "Should be an Equilateral Triangle")
 
-       self.assertEqual(classify_triangle(4,5,6), SCALENE_TRIANGLE, "Should be a Scalene Triangle")
-       self.assertEqual(classify_triangle(6,5,4), SCALENE_TRIANGLE, "Should be a Scalene Triangle")
-       self.assertEqual(classify_triangle(4,6,5), SCALENE_TRIANGLE, "Should be a Scalene Triangle")
+    def test_valid_scalene(self):
+        # test normal scalene
+        self.assertEqual(classify_triangle(4,5,6), SCALENE_TRIANGLE, "Should be a Scalene Triangle")
+        self.assertEqual(classify_triangle(6,5,4), SCALENE_TRIANGLE, "Should be a Scalene Triangle")
+        self.assertEqual(classify_triangle(4,6,5), SCALENE_TRIANGLE, "Should be a Scalene Triangle")
+        #test right scalene
+        self.assertEqual(classify_triangle(3,4,5), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
+        self.assertEqual(classify_triangle(5,4,3), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
+        self.assertEqual(classify_triangle(4,5,3), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
 
-       self.assertEqual(classify_triangle(3,4,5), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
-       self.assertEqual(classify_triangle(5,4,3), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
-       self.assertEqual(classify_triangle(4,5,3), RIGHT_SCALENE_TRIANGLE, "Should be a Scalene Right Triangle")
+    def test_valid_isosceles(self):
+        self.assertEqual(classify_triangle(1,1,math.sqrt(2)), RIGHT_ISOSCELES_TRIANGLE, "Should be a Scalene Right Triangle")
+        self.assertEqual(classify_triangle(3,3,5), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
+        self.assertEqual(classify_triangle(5,3,3), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
+        self.assertEqual(classify_triangle(3,5,3), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
 
-       self.assertEqual(classify_triangle(1,1,math.sqrt(2)), RIGHT_ISOSCELES_TRIANGLE, "Should be a Scalene Right Triangle")
-
-       self.assertEqual(classify_triangle(3,3,5), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
-       self.assertEqual(classify_triangle(5,3,3), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
-       self.assertEqual(classify_triangle(3,5,3), ISOSCELES_TRIANGLE, "Should be an Isosceles Triangle")
-
-    
     def test_edges(self):
         self.assertEqual(classify_triangle(3,3,6), INVALID_TRIANGLE, "Should be an Invalid Triangle")
         self.assertEqual(classify_triangle(-3,3,6), INVALID_TRIANGLE, "Should be an Invalid Triangle")
