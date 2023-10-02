@@ -11,6 +11,7 @@ jobs:
           command: |
             pip install pytest
             pytest --junitxml=test-results/junit.xml hw-02a/test/TestTriangle.py
+            pytest --junitxml=test-results/junit.xml hw-04a/test/TestGitHubApi.py
       - store_test_results:
           path: test-results
 workflows:
