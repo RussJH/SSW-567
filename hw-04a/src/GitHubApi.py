@@ -69,8 +69,48 @@ def GetRepoCommitCounts(json_data):
         print("Invalid JSON")
     return commit_count
 
-def GetUserRepositoryInfo(userID):
-    """Get the list of valid commits from a github API return 
+def GetGithubUserRepositoryList(userID):
+    """Get repos for a user from the github API  
+    Parameters
+    ----------
+    userID : String
+        A name of a user in Github
+
+    Returns
+    -------
+    json
+        Response from Github in json 
+    """
+    json_data = json.loads('[]')
+    request_url = "{}{}/{}/{}".format(GITHUB_API_URL, GITHUB_API_USERS, userID, GITHUB_API_REPO)
+    response = requests.get(request_url)
+    if(response.status_code == 200):
+        json_data = json.loads(response.text)
+    return json_data
+
+def GetGithubCommitsFromRepo(userID, repoName):
+    """Get commits from a github API return 
+    Parameters
+    ----------
+    userID : String
+        A name of a user in Github
+    repoName : String
+        A name of a repo in Github
+
+    Returns
+    -------
+    json
+        Response from Github in json 
+    """
+    json_data = json.loads('[]')
+    commit_url = "{}{}/{}/{}/{}".format(GITHUB_API_URL, GITHUB_API_REPO, userID,  repoName, GITHUB_API_COMMITS )
+    response = requests.get(commit_url)
+    if(response.status_code == 200):
+        json_data = json.loads(response.text)
+    return json_data
+        
+def PrintUserCommitsCountsPerRepo(userID):
+    """Get a list of repos and commit counts for a specified user 
     Parameters
     ----------
     userID : String
@@ -83,20 +123,16 @@ def GetUserRepositoryInfo(userID):
         Repo: xyz Number of Commits: abc
     """
     return_list = []
-    request_url = "{}{}/{}/{}".format(GITHUB_API_URL, GITHUB_API_USERS, userID, GITHUB_API_REPO)
-    response = requests.get(request_url)
-    if(response.status_code == 200):
-        json_data = json.loads(response.text)
-        repos = dict.fromkeys(GetListOfRepos(json_data))
-        
-        for key in repos:
-            commit_url = "{}{}/{}/{}/{}".format(GITHUB_API_URL, GITHUB_API_REPO, userID,  key, GITHUB_API_COMMITS )
-            response = requests.get(commit_url)
-            json_data = json.loads(response.text)
-            repos[key] = GetRepoCommitCounts(json_data)
+    
+    json_data = GetGithubUserRepositoryList(userID)
+    repos = dict.fromkeys(GetListOfRepos(json_data))
+    
+    for key in repos:
+        json_data = GetGithubCommitsFromRepo(userID, key)
+        repos[key] = GetRepoCommitCounts(json_data)
 
-        for key in repos:
-            return_list.append("Repo: {} Number of Commits: {}".format(key, repos[key]))
+    for key in repos:
+        return_list.append("Repo: {} Number of Commits: {}".format(key, repos[key]))
     return return_list
 
 
