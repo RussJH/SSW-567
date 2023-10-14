@@ -9,7 +9,7 @@ The primary goal of this file is to demonstrate a simple python program to class
 @author: rk
 """
 
-def classifyTriangle(a,b,c):
+def classify_triangle(a,b,c):
     """
     Your correct code goes here...  Fix the faulty logic below until the code passes all of 
     you test cases. 
@@ -30,27 +30,27 @@ def classifyTriangle(a,b,c):
     # require that the input values be >= 0 and <= 200
     if a > 200 or b > 200 or c > 200:
         return 'InvalidInput'
-        
+
     if a <= 0 or b <= 0 or c <= 0:
         return 'InvalidInput'
-    
-    # verify that all 3 inputs are integers  
+
+    # verify that all 3 inputs are integers
     # Python's "isinstance(object,type) returns True if the object is of the specified type
     if not(isinstance(a,int) and isinstance(b,int) and isinstance(c,int)):
-        return 'InvalidInput';
-      
-    # This information was not in the requirements spec but 
+        return 'InvalidInput'
+
+    # This information was not in the requirements spec but
     # is important for correctness
     # the sum of any two sides must be strictly less than the third side
     # of the specified shape is not a triangle
     if (a >= (b + c)) or (b >= (a + c)) or (c >= (a + b)):
         return 'NotATriangle'
-        
-    # now we know that we have a valid triangle 
+
+    # now we know that we have a valid triangle
     if a == b and b == c:
         return 'Equilateral'
-    elif (((a * a) + (b * b)) == (c * c) or 
-              ((c * c) + (a * a)) == (b * b) or 
+    elif (((a * a) + (b * b)) == (c * c) or
+              ((c * c) + (a * a)) == (b * b) or
               ((b * b) + (c * c)) == (a*a)):
         return 'Right'
     elif (a != b) and  (b != c) and (a != c):
