@@ -4,6 +4,8 @@ Author: Russ Harrington
 
 
 import unittest
+from unittest import mock
+from unittest.mock import MagicMock, patch
 import json
 
 from GitHubApi import PrintUserCommitsCountsPerRepo
@@ -18,18 +20,26 @@ def is_json(myjson):
     """
     try:
         json.dumps(myjson)
-    except ValueError as e:
+    except ValueError:
         return False
     return True
 
+
 class TestGitHubApi(unittest.TestCase):
 
-    def testGetUserRepositoryInfo(self):
+
+    @patch('GitHubApi.requests')
+    def testGetUserRepositoryInfo(self, mock_requests):
         """
         Test a valid user returns 
         """
+        mock_reponse = MagicMock()
+        mock_reponse.status_code = 200
+        mock_reponse.text = '[{\"name\": \"repo1\"}]'
+        mock_requests.get.return_value = mock_reponse
+
         self.assertGreaterEqual(len(PrintUserCommitsCountsPerRepo("RussJH")), 1)
-    
+
     def testGetUserRepositoryInfoInvalidUser(self):
         """
         Invalid user data should return an empty string
@@ -37,13 +47,11 @@ class TestGitHubApi(unittest.TestCase):
         self.assertEqual(len(PrintUserCommitsCountsPerRepo("")), 0)
 
     def testGetListOfRepos(self):
-        """
-        """
         # test repos
         json_data = json.loads('[{\"name\": \"repo1\"},{\"name\": \"repo2\"},{\"name\": \"repo3\"}]')
         repo_list = ['repo1','repo2', 'repo3']
         self.assertEqual(GetListOfRepos(json_data), repo_list)
-    
+
     def testGetListOfReposEmptySet(self):
         # test empty set
         json_data = json.loads('[]')
@@ -59,7 +67,7 @@ class TestGitHubApi(unittest.TestCase):
         self.assertEqual(GetRepoCommitCounts(json_data), 2)
 
     def testRepoCommitCountsZero(self):
-        # test empty set
+        """ test empty set """
         json_data = json.loads('[]')
         self.assertEqual(GetRepoCommitCounts(json_data), 0)
 
@@ -67,18 +75,38 @@ class TestGitHubApi(unittest.TestCase):
         # test invalid json
         self.assertEqual(GetRepoCommitCounts("INVALID JSON"), 0)
 
-    def testGetGithubUserRepositoryList(self):
+    @patch('GitHubApi.requests')
+    def testGetGithubUserRepositoryList(self, mock_requests):
         #test valid json return
+        mock_reponse = MagicMock()
+        mock_reponse.status_code = 200
+        mock_reponse.text = '[{\"name\": \"repo1\"}]'
+        mock_requests.get.return_value = mock_reponse
         self.assertTrue(is_json(GetGithubUserRepositoryList("RussJH")))
-    
-    def testGetGithubUserRepositoryListInvalid(self):
+
+    @patch('GitHubApi.requests')
+    def testGetGithubUserRepositoryListInvalid(self, mock_requests):
         #test valid json return
+        mock_reponse = MagicMock()
+        mock_reponse.status_code = 200
+        mock_reponse.text = '[ ]'
+        mock_requests.get.return_value = mock_reponse
         self.assertTrue(is_json(GetGithubUserRepositoryList("")))
 
-    def testGetGithubCommitsFromRepo(self):
+    @patch('GitHubApi.requests')
+    def testGetGithubCommitsFromRepo(self, mock_requests):
         #test valid json data
+        mock_reponse = MagicMock()
+        mock_reponse.status_code = 200
+        mock_reponse.text = '[ {\"sha\" : \"888fff\", \"commit\":{ \"comment_count\" : 0} }]'
+        mock_requests.get.return_value = mock_reponse
         self.assertTrue(is_json(GetGithubCommitsFromRepo("RussJH","SSW-567")))
 
-    def testGetGithubCommitsFromRepoInvalid(self):
+    @patch('GitHubApi.requests')
+    def testGetGithubCommitsFromRepoInvalid(self, mock_requests):
         #test valid json data
+        mock_reponse = MagicMock()
+        mock_reponse.status_code = 200
+        mock_reponse.text = '[ ]'
+        mock_requests.get.return_value = mock_reponse
         self.assertTrue(is_json(GetGithubCommitsFromRepo("RussJH","NOT_MY_REPO")))
