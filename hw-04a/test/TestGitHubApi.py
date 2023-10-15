@@ -40,10 +40,15 @@ class TestGitHubApi(unittest.TestCase):
 
         self.assertGreaterEqual(len(PrintUserCommitsCountsPerRepo("RussJH")), 1)
 
-    def testGetUserRepositoryInfoInvalidUser(self):
+    @patch('GitHubApi.requests')
+    def testGetUserRepositoryInfoInvalidUser(self, mock_requests):
         """
         Invalid user data should return an empty string
         """
+        mock_reponse = MagicMock()
+        mock_reponse.status_code = 200
+        mock_reponse.text = '[ ]'
+        mock_requests.get.return_value = mock_reponse
         self.assertEqual(len(PrintUserCommitsCountsPerRepo("")), 0)
 
     def testGetListOfRepos(self):
